@@ -1,0 +1,111 @@
+form {
+  width:500px;
+  margin:50px auto;
+}
+.search {
+  width: 250px;
+  padding:10px 15px;
+  background:rgba(50, 50, 50, 0.2);
+  border:0px solid #dbdbdb;
+}
+.button {
+  position:relative;
+  padding:6px 15px;
+  left:-8px;
+  border:2px solid #207cca;
+  background-color:#207cca;
+  color:#fafafa;
+  width: 70px;
+}
+
+.button:hover  {
+  background-color:#fafafa;
+  color:#207cca;
+}
+
+.arrow {
+  position: relative;
+  left: -8px;
+  background: #207CCA;
+  padding: 8px 15px;
+}
+
+.arrow:after {
+  right: 100%;
+  top: -10%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  border-color: rgba(32, 124, 202, 0);
+  border-right-color: #207CCA;
+  border-width: 10px;
+  margin-top: 10px;
+}
+
+#student-list {
+  background:  #F2EBD9;
+  color:       #624630;
+
+  list-style:  none;
+  margin-left: 180px;
+  min-height:  250px;
+  padding:     10px;
+}
+
+#student-list .notice {
+  font-size:  16px;
+  padding:    60px;
+  text-align: center;
+}
+
+/**
+ * restaurant
+ */
+.student {
+  align-items:   center;
+  border-bottom: 1px solid #FFFFFF;
+  
+  display:       flex;
+  margin:        10px;
+  padding:       15px;
+  transition:    background-color 100ms linear;
+}
+
+.student:last-child {
+  border: none;
+}
+
+.student:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transition: background-color 100ms linear;
+}
+
+.student > div:first-of-type {
+  flex:         1;
+  margin-left:  10px;
+  margin-right: 10px;
+}
+
+.student-name {
+  color:           #624630;
+  font-weight:     400;
+  text-decoration: none;
+}
+
+.student-name:hover {
+  text-decoration: underline;
+}
+
+.fav-link {
+  border-left: 1px solid #FFFFFF;
+  cursor:      pointer;
+  line-height: 60px;
+  text-align:  center;
+  width:       60px;
+}
+
+.fav-link:hover {
+  color: #F13F3F;
+}
