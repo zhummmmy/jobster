@@ -9,10 +9,21 @@ $con = dbopen();
 //}
 /////////////////////////////////////
 $uid = $_GET['sid'];
+$jid = $_GET['jid'];
+
+
 
 $query = "SELECT * FROM student where sid='$uid' ";
 $result = mysqli_query($con, $query);
-
+$query1 = "SELECT sid, sname,university,major
+FROM student
+where sid IN
+(
+SELECT fid
+FROM student as S, friend as F
+where S.sid=F.sid and S.sid='$uid' and fstatus='accepted'
+)";
+$result1 = mysqli_query($con, $query1);
 
 
 mysqli_close($con);
@@ -48,9 +59,13 @@ mysqli_close($con);
   }
   echo "</table>";
 ?>
+
+
+
+
    </div>
    <div class = "right">
-    <a href="student.php?uid=<?php echo $uid ?> &  " style="text-decoration: none; color: black;">
+    <a href="student.php?uid=<?php echo $uid ?> " style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 60px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
       <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
       Home
@@ -89,7 +104,7 @@ mysqli_close($con);
     </div>  
   </a>
 
-  
+
 
   <a href="notification.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
@@ -101,18 +116,45 @@ mysqli_close($con);
 
    </div>
    <div class = "middle">
-<body>
-    <h1 style="color:blue;font-family:monospace;">Input Company Keyword</h1>
-    <form method="POST" action="querycompany.php?sid=<?php echo $uid ?>">
-      <table>
+<?php  
+     if (mysqli_num_rows($result1) > 0) {
+
+        echo "<table border='1'>
         <tr>
-          <td style="font-family:serif;">Enter your keyword:</td>
-          <td><input type="text" size="30" name="keyword" placeholder="enter the description keyword"></td>
-        </tr>
-      </table>
-      <p><input type="submit" value="search"></p>
-    </form>
-</body>
+        <th>Friend's name </th>
+        <th>University</th>
+        <th>Major</th>
+        <th>Show detail</th>
+        <th>Forward</th>
+        </tr>";
+    while($row = mysqli_fetch_assoc($result1)){
+
+              $fid=$row['sid'];
+              echo "<tr>";
+               echo "<td>" . htmlspecialchars($row['sname']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['university']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['major']) . "</td>";
+               echo "<td>"."<a href='frienddetail.php?sid=$uid&fid=$fid'>"."<button type='submit'>"."detail"."<value='detail'>"."</button>"."</a>"."</td>";
+                $count=isforward($uid,$fid,$jid);
+               if($count==0){
+               echo "<td>"."<a href='fowardjobupdate.php?sid=$uid&fid=$fid&jid=$jid'>"."<button type='submit'>"."forward"."<value='forward'>"."</button>"."</a>"."</td>";
+             }
+             else 
+              {
+                echo "<td>forwarded</td>";
+              }
+               echo "</tr>";
+ 
+    }
+ 
+  echo "</table>";
+}
+
+else {
+    echo "no friends";
+}
+
+?>
    </div>
    
    <div class = "clear"></div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+<!-- Neeraj Jain : 27 Feb, 2018 -->
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -17,27 +17,23 @@
 		<form method="GET" action="" name="form1">
 		
 		<div class="input" align="center">
-			<input name="CompanyId" type="id" placeholder="CompanyID">
+			<input name="studentid" type="id" placeholder="studentID">
 			<br>
 			<input name="password" type="password" placeholder="Password (6 or more characters)">
 			<br>
-			<input name="CompanyName" type="text" placeholder="Company name">
-			<br>
-			<input name="Location" type="text" placeholder="Location">
-			<br>
-			<input name="Industry" type="text" placeholder="Industry">
+			<input name="studentname" type="text" placeholder="Student Name">
 			<br>
 		</div>
 
 		</form>
 		<br>
 		<div align="center" style="font-size : 16px;">
-		By clicking Join now ,you agree to the Jobster <a href="">User<br>Agreement</a>,<a href="#"> Privacy Policy</a>, and <a href="#">Cookie Policy</a>
+		By clicking Join now ,you agree to the Jobster <a href="#">User<br>Agreement</a>,<a href="#"> Privacy Policy</a>, and <a href="#">Cookie Policy</a>
 		</div>
 		<br><br><br>
 		<div class="button" align="center">
-
-		<button onclick="form1.action='companyRegister.php';form1.submit();">Join now</button>
+		
+		<button onclick="form1.action='StudentSignUp_Redirect.php';form1.submit();">Join now</button>
 		</div>
 		<p align="center">Already have an account? <strong><a href="index.php">Sign in</a></strong></p>
 	</div>

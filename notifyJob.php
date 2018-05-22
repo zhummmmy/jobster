@@ -9,6 +9,7 @@ $con = dbopen();
 //}
 /////////////////////////////////////
 $uid = $_SESSION["uid"];
+$sid = $_GET["sid"];
 
 $query = "SELECT * FROM company where cid='$uid'";
 $result = mysqli_query($con, $query);
@@ -17,7 +18,6 @@ mysqli_close($con);
 
 
 <!DOCTYPE html>
-<html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
@@ -49,14 +49,13 @@ mysqli_close($con);
 ?>
    </div>
    <div class = "right">
-      <a href="company.php" style="text-decoration: none; color: black;">
+     <a href="company.php" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
       <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
       Home
       </p>
     </div>  
   </a>
-
        <a href="postJob.php" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
       <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
@@ -71,71 +70,48 @@ mysqli_close($con);
       broadcast
       </p>
     </div>  
- </a>
+  </a>
 
    </div>
    <div class = "middle">
-    
-<form method="Post" action='PostJobForm_Redirect.php'>
+     <?php
 
-<!--Table Begins-->
-<div align = "center">
-<table>
-	<tr>
-		<td width="200">
-			<h4 class= "form_sections"  style="display: inline;"> <font color="Green"> Job Title</h4>
-		</td>
-		<td>
-			<input type= "text" placeholder="Job title" name="job_title"></tr>
-		</td>
-	</tr>
-	<tr>
-		<td>	
-			<h4 class= "form_sections" style="display: inline;"><font color="Green">  Salary</h4>
-		</td>
-		<td>	
-			<input type= "text" placeholder="annual salary(in $)" name="job_salary">
-		</td>
-	</tr>
-	<tr>
-		<td>		
-			<h4 class= "form_sections" style="display: inline;"><font color="Green">Qualifications</h4>
-		</td>
-		<td>	
-			<input type= "text" placeholder="Minimum Qualification required" name="job_req" style="height:100px; width:400px;"><br />
-		</td>
-	</tr>
-	<tr>
-		<td>	
-			<h4 class= "form_sections" style="display: inline;"><font color="Green">  Job Description</h4>
-		</td>
-		<td>	
-			<input type= "text" placeholder="Describe Job roles and responsibilities" name="job_desc" style="height:300px; width:400px;">
-		</td>
-	</tr>
-	
-
-	
-</table>
-<div>
-<!--Table ends-->
-
-<input type="submit">
-<style>
-input[type=submit] {
-    width: 20%;
-    background-color: #3366FF;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-<style>
-</form>
+      $result1 = getJobs($uid);
+      if (mysqli_num_rows($result1) > 0) {
+           echo "<table border='1'>
+      <tr>
+      <th>title</th>
+      <th>salary</th>
+      <th>requirements</th>
+      <th>descriptions</th>
+      <th>Post Date</th>
+      <th>Due Date </th>
+      <th>Send Notification</th>
+      </tr>";
+        while($row = mysqli_fetch_assoc($result1)) {
+          $jid = $row['jid'];
+          echo "<tr>";
+          echo "<td>" . htmlspecialchars($row['title']) . "</td>";
+          echo "<td>" . htmlspecialchars($row['salary']) . "</td>";
+          echo "<td>" . htmlspecialchars($row['requirements']) . "</td>";
+          echo "<td>" . htmlspecialchars($row['descriptions']) . "</td>";
+          echo "<td>" . htmlspecialchars($row['jdate']) . "</td>";
+          echo "<td>" . htmlspecialchars($row['due']) . "</td>";
+          if (isNotified($jid, $sid) == false) {
+            echo "<td>"."Notified"."</td>";
+          } else {
+            echo "<td>"."<a href='NotifyJob_Redirect.php?sid=$sid&jid=$jid'>"."<button type='submit'>"."notify"."<value='detail'>"."</button>"."</a>"."</td>";
+          }
+     
+          echo "</tr>";
+        }
+      } else {
+        echo "Not have any Job announcements";
+      }
+      echo "</table>";
 
 
+    ?> 
 
    </div>
    
@@ -147,4 +123,3 @@ input[type=submit] {
 
 </body>
 </html>
-

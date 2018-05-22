@@ -8,14 +8,29 @@ $con = dbopen();
 //    die ('Can\'t use library : ' . mysql_error());
 //}
 /////////////////////////////////////
-$uid = $_GET['sid'];
+
+$uid = $_POST['sid'];
+$fid = $_POST['fid'];
+$content=$_POST['content'];
+
 
 $query = "SELECT * FROM student where sid='$uid' ";
 $result = mysqli_query($con, $query);
+$query1 = "SELECT * from message where (sender='$uid' and receiver = '$fid') or (sender='$fid' and receiver = '$uid') order by mtime ";
+
+$result1 = mysqli_query($con, $query1);
+$sql = "INSERT INTO message values(now(), ?, ?, ?)";
+$stmt = $con->prepare($sql);
+$stmt->bind_param('sss', $uid,$fid,$content);  
+$stmt->execute(); 
+$stmt->close(); 
 
 
 
 mysqli_close($con);
+
+header("Location: message.php?sid=$uid&fid=$fid");
+
 ?>
 
 <!DOCTYPE html>
@@ -50,7 +65,7 @@ mysqli_close($con);
 ?>
    </div>
    <div class = "right">
-    <a href="student.php?uid=<?php echo $uid ?> &  " style="text-decoration: none; color: black;">
+    <a href="student.php?uid=<?php echo $uid ?> " style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 60px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
       <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
       Home
@@ -89,7 +104,7 @@ mysqli_close($con);
     </div>  
   </a>
 
-  
+
 
   <a href="notification.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
@@ -101,18 +116,41 @@ mysqli_close($con);
 
    </div>
    <div class = "middle">
-<body>
-    <h1 style="color:blue;font-family:monospace;">Input Company Keyword</h1>
-    <form method="POST" action="querycompany.php?sid=<?php echo $uid ?>">
-      <table>
-        <tr>
-          <td style="font-family:serif;">Enter your keyword:</td>
-          <td><input type="text" size="30" name="keyword" placeholder="enter the description keyword"></td>
-        </tr>
-      </table>
-      <p><input type="submit" value="search"></p>
+
+  <?php
+    while($row = mysqli_fetch_assoc($result1)){
+      $sender=$row['sender'];
+      
+      if($sender==$uid){
+        echo "<p class=\"right1\">";
+        echo htmlspecialchars($sender);
+        echo " : ";
+        echo htmlspecialchars($row['contents']);
+        echo "<p>";
+      }
+      else{
+        echo"<p class=\"left1\">";
+        echo htmlspecialchars($sender);
+        echo " : ";
+        echo htmlspecialchars($row['contents']);
+        echo "</p>";
+      }
+    }
+
+
+  ?>
+
+  <div class="input" align="center">
+      <form method="POST" action="messageupdate.php">
+      <input name="content" type="text" placeholder="contents">
+      <input name="sid" type="hidden" value="<?php echo $uid;?>">
+      <input name="fid" type="hidden" value="<?php echo $fid;?>">
+     <input type="submit" value="enter" >
+     
     </form>
-</body>
+  </div>
+
+
    </div>
    
    <div class = "clear"></div>
@@ -123,3 +161,4 @@ mysqli_close($con);
 
 </body>
 </html>
+

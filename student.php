@@ -1,6 +1,6 @@
 <?php
 include 'JobsDB.php';
-
+session_start();
 
 $con = dbopen();
 //$db_selected=mysql_select_db('library', $con);
@@ -8,10 +8,16 @@ $con = dbopen();
 //    die ('Can\'t use library : ' . mysql_error());
 //}
 /////////////////////////////////////
+if(!isset($_SESSION["uid"])){
+  header("Location: index.php");
+}
 
 
-$uid= $_GET['uid'];
-setcookie('uid',$uid);
+$uid = $_SESSION["uid"];
+
+//$uid= $_GET['uid'];
+
+
 /*
 $judge = "SELECT sid FROM student where sid='$uid' and spassword='$password' ";
 $result_judge = mysqli_query($con, $judge);
@@ -43,6 +49,7 @@ mysqli_close($con);
 
   
 <body>
+  
  <div class = "wrap" align="center">
    <div class = "left"> 
 <?php
@@ -51,11 +58,11 @@ mysqli_close($con);
   if (mysqli_num_rows($result) > 0) {
     while($row = mysqli_fetch_assoc($result)) {
       echo "Student Name"."<br>"; 
-      echo "<div>" . $row['sname'] . "</div>" . "<br>";
+      echo "<div>" . htmlspecialchars($row['sname']) . "</div>" . "<br>";
       echo "University"."<br>";
-      echo "<div>" . $row['university'] . "</div>"."<br>";
+      echo "<div>" . htmlspecialchars($row['university']) . "</div>"."<br>";
       echo "Major"."<br>";
-      echo "<div>" . $row['major'] . "</div>" ."<br>";
+      echo "<div>" . htmlspecialchars($row['major']) . "</div>" ."<br>";
  
     }
   } else{
@@ -63,6 +70,17 @@ mysqli_close($con);
   }
   echo "</table>";
 ?>
+
+ <a href="updateprofile.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
+    <div style="width: 120px;  height: 60px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
+      <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
+      update profile
+      </p>
+    </div>  
+  </a>
+
+
+
    </div>
    <div class = "right">
    <a href="student.php?uid=<?php echo $uid ?> " style="text-decoration: none; color: black;">
@@ -72,6 +90,7 @@ mysqli_close($con);
       </p>
     </div>  
   </a>
+
        <a href="searchcompany.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 60px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
       <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
@@ -104,13 +123,7 @@ mysqli_close($con);
     </div>  
   </a>
 
-    <a href="message.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
-    <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
-      <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
-      message
-      </p>
-    </div>  
-  </a>
+    
 
   <a href="notification.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
@@ -120,10 +133,21 @@ mysqli_close($con);
     </div>  
   </a>
 
+<br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br>
+  <a href="logout.php" style="text-decoration: none; color: black;">
+    <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
+      <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
+      Log out
+      </p>
+    </div>  
+ </a>
+
    </div>
    <div class = "middle">
 <?php
       if (mysqli_num_rows($result1) > 0) {
+        echo "<h2>Applied Jobs</h2><br><br>";
         echo "<table border='1'>
         <tr>
         <th>Company name </th>
@@ -134,9 +158,9 @@ mysqli_close($con);
         while($row = mysqli_fetch_assoc($result1))
            {
                echo "<tr>";
-               echo "<td>" . $row['cname'] . "</td>";
-               echo "<td>" . $row['title'] . "</td>";
-               echo "<td>" . $row['astatus'] . "</td>";
+               echo "<td>" . htmlspecialchars($row['cname']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['title']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['astatus']) . "</td>";
                echo "</tr>";
             }
         echo "</table>";

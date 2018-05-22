@@ -9,7 +9,7 @@ $con = dbopen();
 //}
 /////////////////////////////////////
 $uid = $_SESSION["uid"];
-
+$jid = $_GET["jid"];
 $query = "SELECT * FROM company where cid='$uid'";
 $result = mysqli_query($con, $query);
 mysqli_close($con);
@@ -17,7 +17,6 @@ mysqli_close($con);
 
 
 <!DOCTYPE html>
-<html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
@@ -49,14 +48,13 @@ mysqli_close($con);
 ?>
    </div>
    <div class = "right">
-      <a href="company.php" style="text-decoration: none; color: black;">
+     <a href="company.php" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
       <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
       Home
       </p>
     </div>  
   </a>
-
        <a href="postJob.php" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
       <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
@@ -71,79 +69,50 @@ mysqli_close($con);
       broadcast
       </p>
     </div>  
- </a>
+    </a>
 
    </div>
    <div class = "middle">
+     <?php
+
+      $result1 = getCandidates($jid);
     
-<form method="Post" action='PostJobForm_Redirect.php'>
+    
 
-<!--Table Begins-->
-<div align = "center">
-<table>
-	<tr>
-		<td width="200">
-			<h4 class= "form_sections"  style="display: inline;"> <font color="Green"> Job Title</h4>
-		</td>
-		<td>
-			<input type= "text" placeholder="Job title" name="job_title"></tr>
-		</td>
-	</tr>
-	<tr>
-		<td>	
-			<h4 class= "form_sections" style="display: inline;"><font color="Green">  Salary</h4>
-		</td>
-		<td>	
-			<input type= "text" placeholder="annual salary(in $)" name="job_salary">
-		</td>
-	</tr>
-	<tr>
-		<td>		
-			<h4 class= "form_sections" style="display: inline;"><font color="Green">Qualifications</h4>
-		</td>
-		<td>	
-			<input type= "text" placeholder="Minimum Qualification required" name="job_req" style="height:100px; width:400px;"><br />
-		</td>
-	</tr>
-	<tr>
-		<td>	
-			<h4 class= "form_sections" style="display: inline;"><font color="Green">  Job Description</h4>
-		</td>
-		<td>	
-			<input type= "text" placeholder="Describe Job roles and responsibilities" name="job_desc" style="height:300px; width:400px;">
-		</td>
-	</tr>
-	
+      if (mysqli_num_rows($result1) > 0) {
+           echo "<table border='1'>
+          <tr>
+      <th>Student Name</th>
+      <th>University</th>
+      <th>Major</th>
+      <th>Detail</th>
+      <th>Accept</th>
+      <th>Reject</th>
+      </tr>";
+        while($row = mysqli_fetch_assoc($result1)) {
+          $sid = $row['sid'];
+          echo "<tr>";
+          echo "<td>" . htmlspecialchars($row['sname']) . "</td>";
+          echo "<td>" . htmlspecialchars($row['university']) . "</td>";
+          echo "<td>" . htmlspecialchars($row['major']) . "</td>";
+          echo "<td>"."<a href='studentdetail.php?sid=$sid'>"."<button type='submit'>"."detail"."<value='detail'>"."</button>"."</a>"."</td>";
+          echo "<td>"."<a href='accept.php?jid=$jid&sid=$sid'>"."<button type='submit'>"."accept"."<value='detail'>"."</button>"."</a>"."</td>";
+          echo "<td>"."<a href='reject.php?jid=$jid&sid=$sid'>"."<button type='submit'>"."reject"."<value='detail'>"."</button>"."</a>"."</td>";
 
-	
-</table>
-<div>
-<!--Table ends-->
-
-<input type="submit">
-<style>
-input[type=submit] {
-    width: 20%;
-    background-color: #3366FF;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-<style>
-</form>
+          echo "</tr>";
+        }
+      } else {
+        echo "No candidate applies to this job now";
+      }
+      echo "</table>";
 
 
+    ?> 
 
    </div>
    
    <div class = "clear"></div>
  </div>
-
-
-
 
 </body>
 </html>

@@ -8,11 +8,15 @@ $con = dbopen();
 //    die ('Can\'t use library : ' . mysql_error());
 //}
 /////////////////////////////////////
+
 $uid = $_GET['sid'];
+$fid = $_GET['fid'];
+
 
 $query = "SELECT * FROM student where sid='$uid' ";
 $result = mysqli_query($con, $query);
-
+$query1 = "SELECT * from message where (sender='$uid' and receiver = '$fid') or (sender='$fid' and receiver = '$uid') order by mtime ";
+$result1 = mysqli_query($con, $query1);
 
 
 mysqli_close($con);
@@ -50,7 +54,7 @@ mysqli_close($con);
 ?>
    </div>
    <div class = "right">
-    <a href="student.php?uid=<?php echo $uid ?> &  " style="text-decoration: none; color: black;">
+    <a href="student.php?uid=<?php echo $uid ?> " style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 60px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
       <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
       Home
@@ -89,7 +93,7 @@ mysqli_close($con);
     </div>  
   </a>
 
-  
+
 
   <a href="notification.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
@@ -101,18 +105,62 @@ mysqli_close($con);
 
    </div>
    <div class = "middle">
-<body>
-    <h1 style="color:blue;font-family:monospace;">Input Company Keyword</h1>
-    <form method="POST" action="querycompany.php?sid=<?php echo $uid ?>">
-      <table>
-        <tr>
-          <td style="font-family:serif;">Enter your keyword:</td>
-          <td><input type="text" size="30" name="keyword" placeholder="enter the description keyword"></td>
-        </tr>
-      </table>
-      <p><input type="submit" value="search"></p>
+
+  <?php
+    while($row = mysqli_fetch_assoc($result1)){
+      $sender=$row['sender'];
+      
+      if($sender==$uid){
+        echo htmlspecialchars($sender);
+        echo " : ";
+        echo htmlspecialchars($row['contents']);
+        echo "<br>";
+      }
+      else{
+        echo htmlspecialchars($sender);
+        echo " : ";
+        echo htmlspecialchars($row['contents']);
+        echo "<br>";
+      }
+    }
+
+
+  ?>
+<!--
+  <div class="input" align="center">
+      <form method="POST" action="messageupdate.php" > 
+      <input name="content" type="text" placeholder="contents">
+      <input name="sid" type="hidden" value="<?php //echo $uid;?>">
+      <input name="fid" type="hidden" value="<?php //echo $fid;?>">
+     <input type="submit" value="enter" >
+     
     </form>
-</body>
+  </div>
+-->
+
+<form action="messageupdate.php" method="post">  
+<input name="content" type="text" placeholder="contents">
+<input name="sid" type="hidden" value="<?php echo $uid;?>">
+<input name="fid" type="hidden" value="<?php echo $fid;?>">
+<input name="submit"   type="submit" value="enter">  
+</form>
+
+
+
+
+
+        <?php
+//        if($_POST['submit']){
+//        $content=$_POST['content'];
+//        $con = dbopen();
+//        $result4=mysqli_query($con,"INSERT INTO message values(now(), '$uid', '$fid', '$content')");
+//        mysqli_close($con);
+//        }
+//        else{
+//          echo "error";
+ //       }
+        ?>
+
    </div>
    
    <div class = "clear"></div>
@@ -123,3 +171,25 @@ mysqli_close($con);
 
 </body>
 </html>
+
+
+
+
+<!--
+<script>  
+
+    var _clearText=document.getElementById("clearText");  
+    _clearText.onclick=function(){  
+
+        var _elements=document.getElementById("clearFrom").elements,  
+                _elementsLen=_elements.length,  
+                _ei=null,  
+                i=0;  
+        for(;i<_elementsLen;i++){  
+            _ei=_elements[i];  
+            //如果是文本类型，将其修改为空  
+            (_ei.type=="text"||_ei.type=="textarea")&&(_ei.value="");  
+        }  
+    }  
+
+</script>  

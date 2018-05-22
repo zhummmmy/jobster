@@ -9,11 +9,14 @@ $con = dbopen();
 //}
 /////////////////////////////////////
 $uid = $_GET['sid'];
+$jid = $_GET['jid'];
+
+
 
 $query = "SELECT * FROM student where sid='$uid' ";
 $result = mysqli_query($con, $query);
 
-
+$result1 = mysqli_query($con, "INSERT INTO apply values('$uid','$jid','pending')");
 
 mysqli_close($con);
 ?>
@@ -50,7 +53,7 @@ mysqli_close($con);
 ?>
    </div>
    <div class = "right">
-    <a href="student.php?uid=<?php echo $uid ?> &  " style="text-decoration: none; color: black;">
+    <a href="student.php?uid=<?php echo $uid ?> " style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 60px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
       <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
       Home
@@ -89,7 +92,7 @@ mysqli_close($con);
     </div>  
   </a>
 
-  
+   
 
   <a href="notification.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
@@ -101,18 +104,14 @@ mysqli_close($con);
 
    </div>
    <div class = "middle">
-<body>
-    <h1 style="color:blue;font-family:monospace;">Input Company Keyword</h1>
-    <form method="POST" action="querycompany.php?sid=<?php echo $uid ?>">
-      <table>
-        <tr>
-          <td style="font-family:serif;">Enter your keyword:</td>
-          <td><input type="text" size="30" name="keyword" placeholder="enter the description keyword"></td>
-        </tr>
-      </table>
-      <p><input type="submit" value="search"></p>
-    </form>
-</body>
+
+    <div>
+
+    <hr>
+    <p>Your application has been sent successfully!</p>
+  
+</div>
+
    </div>
    
    <div class = "clear"></div>

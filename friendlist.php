@@ -10,6 +10,8 @@ $con = dbopen();
 /////////////////////////////////////
 $uid = $_GET['sid'];
 
+
+
 $query = "SELECT * FROM student where sid='$uid' ";
 $result = mysqli_query($con, $query);
 $query1 = "SELECT sid, sname,university,major
@@ -44,11 +46,11 @@ mysqli_close($con);
   if (mysqli_num_rows($result) > 0) {
     while($row = mysqli_fetch_assoc($result)) {
       echo "Student Name"."<br>"; 
-      echo "<div>" . $row['sname'] . "</div>" . "<br>";
+      echo "<div>" . htmlspecialchars($row['sname']) . "</div>" . "<br>";
       echo "University"."<br>";
-      echo "<div>" . $row['university'] . "</div>"."<br>";
+      echo "<div>" . htmlspecialchars($row['university']) . "</div>"."<br>";
       echo "Major"."<br>";
-      echo "<div>" . $row['major'] . "</div>" ."<br>";
+      echo "<div>" . htmlspecialchars($row['major']) . "</div>" ."<br>";
  
     }
   } else{
@@ -97,13 +99,7 @@ mysqli_close($con);
     </div>  
   </a>
 
-    <a href="message.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
-    <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
-      <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
-      message
-      </p>
-    </div>  
-  </a>
+
 
   <a href="notification.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
@@ -124,14 +120,17 @@ mysqli_close($con);
         <th>University</th>
         <th>Major</th>
         <th>Show detail</th>
+        <th>Message</th>
         </tr>";
     while($row = mysqli_fetch_assoc($result1)){
+
               $fid=$row['sid'];
               echo "<tr>";
-               echo "<td>" . $row['sname'] . "</td>";
-               echo "<td>" . $row['university'] . "</td>";
-               echo "<td>" . $row['major'] . "</td>";
-               echo "<td>"."<a href='frienddetail.php?sid=$uid & fid=$fid'>"."<button type='submit'>"."detail"."<value='detail'>"."</button>"."</a>"."</td>";
+               echo "<td>" . htmlspecialchars($row['sname']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['university']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['major']) . "</td>";
+               echo "<td>"."<a href='frienddetail.php?sid=$uid&fid=$fid'>"."<button type='submit'>"."detail"."<value='detail'>"."</button>"."</a>"."</td>";
+               echo "<td>"."<a href='message.php?sid=$uid&fid=$fid'>"."<button type='submit'>"."message"."<value='message'>"."</button>"."</a>"."</td>";
                echo "</tr>";
  
     }

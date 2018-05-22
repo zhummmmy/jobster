@@ -24,11 +24,13 @@
    
       <br><br><br>
    
-	   <input type="submit" value="student"  onclick="form1.action='student.php';form1.submit();"/>
+	   <input type="submit" name = "student" value="student"  onclick="form1.action='loginCheck.php';form1.submit();"/>
      <br>
-     <input type="submit" value="company" onclick="form1.action='company.php';form1.submit();"/>
+     <input type="submit" name = "company" value="company" onclick="form1.action='loginCheck.php';form1.submit();"/>
      <br>
-     <input type="submit" value="sign up"  onclick="form1.action='companySignUp.php';form1.submit();"/>
+     <input type="submit" value="Student sign up"  onclick="form1.action='studentSignUp.php';form1.submit();"/>
+     <br>
+      <input type="submit" value="Company sign up"  onclick="form1.action='companySignUp.php';form1.submit();"/>
 
     </form>
   </div>

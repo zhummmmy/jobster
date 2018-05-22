@@ -9,18 +9,22 @@ $con = dbopen();
 //}
 /////////////////////////////////////
 $uid = $_GET['sid'];
-$keyword = $_POST['keyword'];
-
 
 $query = "SELECT * FROM student where sid='$uid' ";
 $result = mysqli_query($con, $query);
-$query1 = "SELECT * FROM company natural join job where ((title like ?) or (requirements like ?) or (descriptions like ?))";
-$keyword1 = "%{$keyword}%";
-$stmt = $con->prepare($query1);
-$stmt->bind_param('sss', $keyword1,$keyword1, $keyword1);  
-$stmt->execute(); 
-$result1 = $stmt->get_result();
-$stmt->close(); 
+$query1 ="SELECT S.sname,S.sid
+FROM friend as F, student as S
+where F.fid='$uid' and F.sid=S.sid and  fstatus='request'";
+$result1 = mysqli_query($con, $query1);
+$query2= "SELECT *
+FROM job natural join notification natural join company
+where sid='$uid' and nstatus='not viewed' order by ntime desc";
+$result2 = mysqli_query($con, $query2);
+$query3="SELECT S.sname, C.cname, J.title, J.salary, J.requirements, J.descriptions, J.jid
+FROM forward as F, job as J, student as S,company as C
+where F.receiver='$uid' and F.sender=S.sid and F.jid=J.jid and C.cid=J.cid and F.fostatus='not viewed'";
+$result3 = mysqli_query($con, $query3);
+
 
 mysqli_close($con);
 ?>
@@ -57,7 +61,7 @@ mysqli_close($con);
 ?>
    </div>
    <div class = "right">
-    <a href="student.php?uid=<?php echo $uid ?>  " style="text-decoration: none; color: black;">
+    <a href="student.php?uid=<?php echo $uid ?> " style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 60px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
       <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
       Home
@@ -96,7 +100,7 @@ mysqli_close($con);
     </div>  
   </a>
 
- 
+
 
   <a href="notification.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
@@ -108,10 +112,31 @@ mysqli_close($con);
 
    </div>
    <div class = "middle">
-<?php  
-     if (mysqli_num_rows($result1) > 0) {
+<?php
+  echo "friend request <br>"; 
+  echo "<table border='1'>
+        <tr>
+        <th>Student's name </th>
+        <th>Detail</th>
+        <th>Accept</th>
+        <th>decline</th>
+        </tr>";
+    while($row = mysqli_fetch_assoc($result1)){
+              $fid=$row['sid'];
+              echo "<tr>";
+               echo "<td>" . htmlspecialchars($row['sname']) . "</td>";
+               echo "<td>"."<a href='frienddetail.php?sid=$uid & fid=$fid'>"."<button type='submit'>"."detail"."<value='detail'>"."</button>"."</a>"."</td>";
+               echo "<td>"."<a href='acceptrequest.php?sid=$uid & fid=$fid'>"."<button type='submit'>"."accept"."<value='accept'>"."</button>"."</a>"."</td>";
+               echo "<td>"."<a href='declinerequest.php?sid=$uid & fid=$fid'>"."<button type='submit'>"."decline"."<value='decline'>"."</button>"."</a>"."</td>";
+               echo "</tr>";
+ 
+    }
+ 
+  echo "</table>";
 
-        echo "<table border='1'>
+
+  echo "<br><br><br>Followed Companys' Post";
+  echo "<table border='1'>
         <tr>
         <th>Company name </th>
         <th>Job name</th>
@@ -119,9 +144,10 @@ mysqli_close($con);
         <th>requirements</th>
         <th>descriptions</th>
         <th>apply</th>
-        <th>foward</th>
+        <th>ignore</th>
+        <th>Forward</th>
         </tr>";
-    while($row = mysqli_fetch_assoc($result1)){
+    while($row = mysqli_fetch_assoc($result2)){
               echo "<tr>";
               $jid=$row['jid'];
                echo "<td>" . htmlspecialchars($row['cname']) . "</td>";
@@ -131,24 +157,64 @@ mysqli_close($con);
                echo "<td>" . htmlspecialchars($row['descriptions']) . "</td>";
                $count=isapply($uid,$jid);
                if($count==0){
-               echo "<td>"."<a href='applyjob.php?sid=$uid&jid=$jid'>"."<button type='submit'>"."apply"."<value='apply'>"."</button>"."</a>"."</td>";
-               }
-               else{
-                echo "<td>applied</td>";
-               }
+                echo "<td>"."<a href='applyjob.php?sid=$uid&jid=$jid'>"."<button type='submit'>"."apply"."<value='apply'>"."</button>"."</a>"."</td>";
+              }
+              else{
+                 echo "<td>applied</td>";
+              }
+               echo "<td>"."<a href='declinejob.php?sid=$uid&jid=$jid'>"."<button type='submit'>"."ignore"."<value='ignore'>"."</button>"."</a>"."</td>";
                echo "<td>"."<a href='fowardjob.php?sid=$uid&jid=$jid'>"."<button type='submit'>"."foward"."<value='foward'>"."</button>"."</a>"."</td>";
                echo "</tr>";
  
     }
  
   echo "</table>";
-}
 
-else {
-    echo "no results";
-}
+
+   echo "</table>";
+
+
+  echo "<br><br><br>Foward by friends' Post";
+  echo "<table border='1'>
+        <tr>
+        <th>Friend's name </th>
+        <th>Company name </th>
+        <th>Job name</th>
+        <th>Salary</th>
+        <th>requirements</th>
+        <th>descriptions</th>
+        <th>apply</th>
+        <th>ignore</th>
+        <th>Forward</th>
+        </tr>";
+    while($row = mysqli_fetch_assoc($result3)){
+              echo "<tr>";
+              $jid=$row['jid'];
+              echo "<td>" . htmlspecialchars($row['sname']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['cname']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['title']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['salary']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['requirements']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['descriptions']) . "</td>";
+               $count=isapply($uid,$jid);
+               if($count==0){
+                echo "<td>"."<a href='applyjob.php?sid=$uid&jid=$jid'>"."<button type='submit'>"."apply"."<value='apply'>"."</button>"."</a>"."</td>";
+              }
+              else{
+                echo "<td>applied</td>";
+              }
+                echo "<td>"."<a href='declinejob.php?sid=$uid&jid=$jid'>"."<button type='submit'>"."ignore"."<value='ignore'>"."</button>"."</a>"."</td>";
+                echo "<td>"."<a href='fowardjob.php?sid=$uid&jid=$jid'>"."<button type='submit'>"."foward"."<value='foward'>"."</button>"."</a>"."</td>";
+               echo "</tr>";
+ 
+    }
+ 
+  echo "</table>";
 
 ?>
+
+
+
 
 
    </div>

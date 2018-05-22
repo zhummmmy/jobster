@@ -9,10 +9,14 @@ $con = dbopen();
 //}
 /////////////////////////////////////
 $uid = $_GET['sid'];
+$fid = $_GET['fid'];
 
 $query = "SELECT * FROM student where sid='$uid' ";
 $result = mysqli_query($con, $query);
-
+$query1 = "SELECT *
+FROM student
+where sid='$fid' and (security='allow' or  sid in (select sid from friend where sid='$fid' and fid='$uid' and fstatus='accepted'))";
+$result1 = mysqli_query($con, $query1);
 
 
 mysqli_close($con);
@@ -50,7 +54,7 @@ mysqli_close($con);
 ?>
    </div>
    <div class = "right">
-    <a href="student.php?uid=<?php echo $uid ?> &  " style="text-decoration: none; color: black;">
+    <a href="student.php?uid=<?php echo $uid ?> " style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 60px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
       <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
       Home
@@ -89,7 +93,7 @@ mysqli_close($con);
     </div>  
   </a>
 
-  
+
 
   <a href="notification.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
@@ -101,18 +105,48 @@ mysqli_close($con);
 
    </div>
    <div class = "middle">
-<body>
-    <h1 style="color:blue;font-family:monospace;">Input Company Keyword</h1>
-    <form method="POST" action="querycompany.php?sid=<?php echo $uid ?>">
-      <table>
+<?php  
+     
+if (mysqli_num_rows($result1) > 0) {
+
+        echo "<table border='2'>
         <tr>
-          <td style="font-family:serif;">Enter your keyword:</td>
-          <td><input type="text" size="30" name="keyword" placeholder="enter the description keyword"></td>
-        </tr>
-      </table>
-      <p><input type="submit" value="search"></p>
-    </form>
-</body>
+        <th>Friend's name </th>
+        <th>GPA</th>
+        <th>University</th>
+        <th>Major</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>interests</th>
+        <th>qualification</th>
+        <th>Resume</th>
+        </tr>";
+    while($row = mysqli_fetch_assoc($result1)){
+              $fid=$row['sid'];
+              echo "<tr>";
+               echo "<td>" . htmlspecialchars($row['sname']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['gpa']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['university']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['major']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['phone']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['email']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['interests']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['qualification']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['resume']) . "</td>";
+               echo "</tr>";
+ 
+    }
+ 
+  echo "</table>";
+}
+
+else {
+    echo "This person doesn't share his personal information";
+}
+
+
+
+?>
    </div>
    
    <div class = "clear"></div>

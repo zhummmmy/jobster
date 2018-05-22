@@ -10,9 +10,11 @@ $con = dbopen();
 /////////////////////////////////////
 $uid = $_GET['sid'];
 
+
+
 $query = "SELECT * FROM student where sid='$uid' ";
 $result = mysqli_query($con, $query);
-
+$row = mysqli_fetch_assoc($result);
 
 
 mysqli_close($con);
@@ -34,7 +36,7 @@ mysqli_close($con);
 
 
   if (mysqli_num_rows($result) > 0) {
-    while($row = mysqli_fetch_assoc($result)) {
+    
       echo "Student Name"."<br>"; 
       echo "<div>" . htmlspecialchars($row['sname']) . "</div>" . "<br>";
       echo "University"."<br>";
@@ -42,7 +44,7 @@ mysqli_close($con);
       echo "Major"."<br>";
       echo "<div>" . htmlspecialchars($row['major']) . "</div>" ."<br>";
  
-    }
+    
   } else{
     echo "not enough information";
   }
@@ -50,7 +52,7 @@ mysqli_close($con);
 ?>
    </div>
    <div class = "right">
-    <a href="student.php?uid=<?php echo $uid ?> &  " style="text-decoration: none; color: black;">
+    <a href="student.php?uid=<?php echo $uid ?> " style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 60px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
       <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
       Home
@@ -89,7 +91,7 @@ mysqli_close($con);
     </div>  
   </a>
 
-  
+   
 
   <a href="notification.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
@@ -101,18 +103,123 @@ mysqli_close($con);
 
    </div>
    <div class = "middle">
-<body>
-    <h1 style="color:blue;font-family:monospace;">Input Company Keyword</h1>
-    <form method="POST" action="querycompany.php?sid=<?php echo $uid ?>">
-      <table>
-        <tr>
-          <td style="font-family:serif;">Enter your keyword:</td>
-          <td><input type="text" size="30" name="keyword" placeholder="enter the description keyword"></td>
-        </tr>
-      </table>
-      <p><input type="submit" value="search"></p>
-    </form>
+
+
+<body style = "background-color : #336666;">
+
+<!--Form Begins-->
+<form method="POST" action='updateprofile2.php'>
+<input name="sid" type="hidden" value="<?php echo $uid;?>">
+
+<!--Table Begins-->
+<div align = "center">
+<table>
+  <tr>
+    <td width="200">
+      <h4 class= "form_sections"  style="display: inline;"> <font color="Green"> GPA</h4>
+    </td>
+    <td>
+      <input type= "text" placeholder="GPA" name="gpa" value=<?php echo $row['gpa']?> ></tr>
+    </td>
+  </tr>
+  <tr>
+    <td>  
+      <h4 class= "form_sections" style="display: inline;"><font color="Green"> University</h4>
+    </td>
+    <td>  
+      <input type= "text" placeholder="university" name="university" value="<?php echo $row['university']?>" >
+    </td>
+  </tr>
+
+<tr>
+    <td>  
+      <h4 class= "form_sections" style="display: inline;"><font color="Green"> Major</h4>
+    </td>
+    <td>  
+      <input type= "text" placeholder="major" name="major" value="<?php echo $row['major']?>" >
+    </td>
+  </tr>
+
+<tr>
+    <td>  
+      <h4 class= "form_sections" style="display: inline;"><font color="Green"> Phone</h4>
+    </td>
+    <td>  
+      <input type= "text" placeholder="phone" name="phone" value=<?php echo $row['phone']?> >
+    </td>
+  </tr>
+
+  <tr>
+    <td>  
+      <h4 class= "form_sections" style="display: inline;"><font color="Green"> Email</h4>
+    </td>
+    <td>  
+      <input type= "text" placeholder="emial" name="email" value=<?php echo $row['email']?> > 
+    </td>
+  </tr>
+
+ 
+  <tr>
+    <td>    
+      <h4 class= "form_sections" style="display: inline;"><font color="Green">Interests</h4>
+    </td>
+    <td>  
+      <input type= "text" placeholder="interests" name="interests"  value="<?php echo $row['interests']?>" style="height:100px; width:400px;"><br />
+    </td>
+  </tr>
+
+  <tr>
+    <td>    
+      <h4 class= "form_sections" style="display: inline;"><font color="Green">qualifications</h4>
+    </td>
+    <td>  
+      <input type= "text" placeholder="qualifications" name="qualifications"  value="<?php echo $row['qualification']?>" style="height:100px; width:400px;"><br />
+    </td>
+  </tr>
+
+
+
+  <tr>
+    <td>  
+      <h4 class= "form_sections" style="display: inline;"><font color="Green">  Resume</h4>
+    </td>
+    <td>  
+      <input type= "text" placeholder="resume" name="resume"  value="<?php echo $row['resume']?>" style="height:300px; width:400px;">
+    </td>
+  </tr>
+
+
+  <tr>
+    <td>  
+      <h4 class= "form_sections" style="display: inline;"><font color="Green">  Security</h4>
+    </td>
+    <td>  
+       <input type="checkbox" name="security" value="security" /> show other people your detail information
+    </td>
+  </tr>
+ 
+</table>
+<div>
+<!--Table ends-->
+
+<input type="submit">
+<style>
+input[type=submit] {
+    width: 20%;
+    background-color: #3366FF;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+<style>
+</form>
 </body>
+
+
+
    </div>
    
    <div class = "clear"></div>

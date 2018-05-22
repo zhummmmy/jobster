@@ -14,9 +14,13 @@ $keyword = $_POST['keyword'];
 
 $query = "SELECT * FROM student where sid='$uid' ";
 $result = mysqli_query($con, $query);
-$query1 = "SELECT cname, clocation, industry FROM company where ((cname like '%$keyword%') or (industry like '%$keyword%'))";
-$result1 = mysqli_query($con, $query1);
-
+$query1 = "SELECT cid,cname, clocation, industry FROM company where ((cname like ?) or (industry like ?))";
+$keyword1 = "%{$keyword}%";
+$stmt = $con->prepare($query1);
+$stmt->bind_param('ss', $keyword1,$keyword1);  
+$stmt->execute(); 
+$result1 = $stmt->get_result();
+$stmt->close(); 
 mysqli_close($con);
 ?>
 
@@ -38,11 +42,11 @@ mysqli_close($con);
   if (mysqli_num_rows($result) > 0) {
     while($row = mysqli_fetch_assoc($result)) {
       echo "Student Name"."<br>"; 
-      echo "<div>" . $row['sname'] . "</div>" . "<br>";
+      echo "<div>" . htmlspecialchars($row['sname']) . "</div>" . "<br>";
       echo "University"."<br>";
-      echo "<div>" . $row['university'] . "</div>"."<br>";
+      echo "<div>" . htmlspecialchars($row['university']) . "</div>"."<br>";
       echo "Major"."<br>";
-      echo "<div>" . $row['major'] . "</div>" ."<br>";
+      echo "<div>" . htmlspecialchars($row['major']) . "</div>" ."<br>";
  
     }
   } else{
@@ -91,13 +95,7 @@ mysqli_close($con);
     </div>  
   </a>
 
-    <a href="message.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
-    <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
-      <p style="font-size:18px; font-family: cursive; margin: 2px auto;"> 
-      message
-      </p>
-    </div>  
-  </a>
+   
 
   <a href="notification.php?sid=<?php echo $uid ?>" style="text-decoration: none; color: black;">
     <div style="width: 120px;  height: 30px; background-color: orange; border: solid red 1px; border-radius: 10px; text-align: center; margin-top: 1%; margin-left: 5%;">
@@ -117,12 +115,21 @@ mysqli_close($con);
         <th>Company name </th>
         <th>Location</th>
         <th>Industry</th>
+        <th>Follow</th>
         </tr>";
     while($row = mysqli_fetch_assoc($result1)){
               echo "<tr>";
-               echo "<td>" . $row['cname'] . "</td>";
-               echo "<td>" . $row['clocation'] . "</td>";
-               echo "<td>" . $row['industry'] . "</td>";
+              $cid=$row['cid'];
+               echo "<td>" . htmlspecialchars($row['cname']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['clocation']) . "</td>";
+               echo "<td>" . htmlspecialchars($row['industry']) . "</td>";
+               $count=isfollow($uid,$cid);
+               if($count==0){
+               echo "<td>"."<a href='followcompany.php?sid=$uid & cid=$cid'>"."<button type='submit'>"."follow"."<value='follow'>"."</button>"."</a>"."</td>";
+               }
+               else{
+                echo "<td>following</td>";
+               }
                echo "</tr>";
  
     }
